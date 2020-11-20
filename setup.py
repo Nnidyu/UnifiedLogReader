@@ -11,18 +11,14 @@ try:
 except ImportError:
   from distutils.core import find_packages, setup
 
-try:  # for pip >= 10
-    from pip._internal.download import PipSession
-    from pip._internal.req import parse_requirements
-except ImportError:  # for pip <= 9.0.3
-    from pip.download import PipSession
-    from pip.req import parse_requirements
-
 # Change PYTHONPATH to include UnifiedLog so that we can get the version.
 sys.path.insert(0, '.')
 
 import UnifiedLog  # pylint: disable=wrong-import-position
 
+requirements = []
+with open('requirements.txt','r') as f:
+    requirements = f.read().splitlines()
 
 unifiedlog_description = (
     'A parser for Unified logging .tracev3 files.')
@@ -57,7 +53,5 @@ setup(
         ('share/doc/UnifiedLog', [
             'LICENSE.txt', 'README.md']),
     ],
-    install_requires=[str(req.req) for req in parse_requirements(
-        'requirements.txt', session=PipSession(),
-    )],
+    install_requires=requirements,
 )
